@@ -59,4 +59,10 @@
 (add-to-list 'default-frame-alist
 	     '(font . "Inconsolata-14"))
 
+;; set default GUI window size
+(add-to-list 'default-frame-alist
+	     '(width . 162))
+(add-to-list 'default-frame-alist
+	     '(height . 45))
+
 (provide 'my-ui)
