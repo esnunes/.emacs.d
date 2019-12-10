@@ -55,4 +55,8 @@
   :config
   (volatile-highlights-mode +1))
 
+;; set font
+(add-to-list 'default-frame-alist
+	     '(font . "Inconsolata-14"))
+
 (provide 'my-ui)
