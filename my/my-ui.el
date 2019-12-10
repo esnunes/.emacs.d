@@ -29,11 +29,14 @@
 (column-number-mode t)
 (size-indication-mode t)
 
-;; zenburn theme
-(use-package zenburn-theme
+;; doom themes
+(use-package doom-themes
+  :custom
+  (doom-themes-enable-bold nil)
+  (doom-themes-enable-italic nil)
   :ensure t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'doom-vibrant t))
 
 ;; show the cursor when moving after big movements in the window
 (use-package beacon
