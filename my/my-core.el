@@ -58,4 +58,7 @@
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 
+;; toggle frame into full screen (GUI specific)
+(global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
+
 (provide 'my-core)
