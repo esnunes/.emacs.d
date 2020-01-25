@@ -10,6 +10,7 @@
 (require 'my-editor)
 (require 'my-ui)
 
+(require 'my-yaml)
 (require 'my-markdown)
 (require 'my-clojure)
 
