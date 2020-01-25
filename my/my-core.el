@@ -42,6 +42,11 @@
   :config
   (global-set-key (kbd "C-s") 'swiper))
 
+(use-package flycheck
+  :ensure t
+  :config
+  (global-flycheck-mode))
+
 (use-package company
   :ensure t
   :config
