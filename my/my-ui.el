@@ -36,7 +36,7 @@
   (doom-themes-enable-italic nil)
   :ensure t
   :config
-  (load-theme 'doom-vibrant t))
+  (load-theme 'doom-one t))
 
 ;; show the cursor when moving after big movements in the window
 (use-package beacon
