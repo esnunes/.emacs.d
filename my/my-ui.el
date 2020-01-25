@@ -57,7 +57,7 @@
 
 ;; set font
 (add-to-list 'default-frame-alist
-	     '(font . "Inconsolata-14"))
+	     '(font . "Inconsolata-15"))
 
 ;; set default GUI window size
 (add-to-list 'default-frame-alist
