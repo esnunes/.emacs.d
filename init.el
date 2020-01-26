@@ -13,6 +13,7 @@
 (require 'my-yaml)
 (require 'my-markdown)
 (require 'my-clojure)
+(require 'my-js)
 
 ;; config changes made through the customize UI will be stored here
 (setq custom-file (expand-file-name "my-custom.el" my-dir))
