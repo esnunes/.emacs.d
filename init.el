@@ -14,6 +14,7 @@
 (require 'my-markdown)
 (require 'my-clojure)
 (require 'my-js)
+(require 'my-ruby)
 
 ;; config changes made through the customize UI will be stored here
 (setq custom-file (expand-file-name "my-custom.el" my-dir))
