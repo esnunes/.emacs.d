@@ -10,6 +10,8 @@
 (defun remove-menu-bar (&optional frame)
   (when (fboundp 'menu-bar-mode)
     (menu-bar-mode -1)))
+
+(remove-menu-bar)
 ;; make sure menu bar is removed on every new frame
 (add-hook 'after-make-frame-functions 'remove-menu-bar)
 
