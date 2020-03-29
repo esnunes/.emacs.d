@@ -67,10 +67,11 @@
 (add-to-list 'default-frame-alist
 	     '(height . 45))
 
-;; set default GUI window size
-(add-to-list 'default-frame-alist
-	     '(width . 162))
-(add-to-list 'default-frame-alist
-	     '(height . 45))
+(use-package ace-window
+  :ensure t
+  :init
+  (setq aw-scope 'frame)
+  (setq aw-dispatch-always t)
+  :bind (("C-u" . ace-window)))
 
 (provide 'my-ui)
