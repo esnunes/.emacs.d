@@ -1,0 +1,111 @@
+oun#+TITLE: Emacs configuration
+#+AUTHOR: Eduardo Nunes
+
+* Core
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default buffer-quit-function
+                #'(lambda () (message "Are you trying to quit?")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (setq read-process-output-max (* 3 1024 1024))
+#+END_SRC
+
+* Org
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure t  
+    :config
+    (setq org-export-coding-system 'utf-8)
+    (setq org-capture-templates
+          '(()))
+    (setq org-capture-templates-contexts
+          '(()))
+    :bind 
+    ("C-c c" . org-capture)
+    ("C-c s" . counsel-org-goto))
+
+  ;; add support to export org files to HTML
+  (use-package htmlize
+    :ensure t)
+
+  ;; force 0 indentation when ledger-mode
+  (define-advice org-edit-src-exit (:before (&rest _args))
+    "Set org-src-preserve-indentation."
+    (if (eq major-mode 'ledger-mode)
+        (setq org-edit-src-content-indentation 0)
+      (setq org-edit-src-content-indentation 2)))
+#+END_SRC
+
+* Ledger
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ledger-mode
+    :ensure t)
+
+  (use-package flycheck-ledger
+    :ensure t
+    :config
+    (setq ledger-default-date-format "%Y-%m-%d")
+    (add-hook 'ledger-mode-hook 'flycheck-mode))
+#+END_SRC
+
+* Language Server Protocol (LSP)
+
+#+BEGIN_SRC emacs-lisp
+  (defun en/lsp-sorbet-command ()
+    "Command to run sorbet"
+    '("bundle" "exec" "srb" "tc" "--lsp" "--enable-all-beta-lsp-features" "--disable-watchman"))
+
+  (defun en/lsp-should-activate-sorbet-p (_ major-mode)
+    "Check if project has a sorbet directory"
+    (and
+     (seq-contains '(enh-ruby-mode ruby-mode) major-mode)
+     (file-accessible-directory-p (expand-file-name "sorbet" (lsp-workspace-root)))))
+
+  (use-package lsp-mode
+    :ensure t
+    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+           (enh-ruby-mode . lsp)
+           ;; if you want which-key integration
+           (lsp-mode . lsp-enable-which-key-integration))
+    :init
+    (setq lsp-keymap-prefix "C-l")
+    :config
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection 'en/lsp-sorbet-command)
+      :activation-fn 'en/lsp-should-activate-sorbet-p
+      :priority 1
+      :multi-root nil
+      :server-id 'ruby-sorbet
+      :initialized-fn (lambda (workspace)
+                        (with-lsp-workspace workspace
+                          (lsp--set-configuration "sorbet")))))
+    :commands lsp)
+
+
+  (use-package lsp-ivy
+    :ensure t
+    :commands lsp-ivy-workspace-symbol
+    :config
+    :bind (("M-T" . lsp-ivy-workspace-symbol)
+           :map lsp-mode-map
+           ("C-l g s" . lsp-ivy-workspace-symbol)))
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
+
+  (use-package company-lsp
+    :ensure t
+    :commands company-lsp
+    :custom
+    (company-lsp-async t)
+    (company-lsp-enable-recompletion t))
+
+  (setq company-minimum-prefix-length 1
+        company-idle-delay 0.0) ;; default is 0.2
+#+END_SRC
