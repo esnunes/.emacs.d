@@ -1,4 +1,4 @@
-oun#+TITLE: Emacs configuration
+#+TITLE: Emacs configuration
 #+AUTHOR: Eduardo Nunes
 
 * Core
