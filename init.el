@@ -1,22 +1,21 @@
-(setq my-dir (expand-file-name "my" user-emacs-directory))
+(setq 3rd-party-dir (expand-file-name "3rd-party" user-emacs-directory))
 
 (setq load-prefer-newer t)
 
-;; add my directory to load-path
-(add-to-list 'load-path my-dir)
+;; add 3rd-party directory to load-path
+(add-to-list 'load-path 3rd-party-dir)
 
-(require 'my-packages)
-(require 'my-core)
-(require 'my-editor)
-(require 'my-ui)
+;; temporarily disable garbage collector, then reset it later by
+;; enabling `gcmh-mode`.
+(setq gc-cons-threshold most-positive-fixnum)
+;; increase the garbage collector threshold
+;; (setq gc-cons-threshold (* 1024 1024 128))
+(setq read-process-output-max (* 1024 1024))
 
-(require 'my-yaml)
-(require 'my-markdown)
-(require 'my-clojure)
-(require 'my-js)
-(require 'my-ruby)
+(require 'org)
+(org-babel-load-file (expand-file-name "esnunes.config.org" user-emacs-directory))
 
 ;; config changes made through the customize UI will be stored here
-(setq custom-file (expand-file-name "my-custom.el" my-dir))
+(setq custom-file (expand-file-name "esnunes.custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))

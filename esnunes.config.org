@@ -1,0 +1,456 @@
+#+title: Emacs config
+#+author: Eduardo Nunes
+
+* Init
+Many of the settings listed below were copied from [[https://github.com/hlissner/doom-emacs][Doom Emacs]].
+
+#+begin_src emacs-lisp
+  (defconst IS-MAC     (eq system-type 'darwin))
+  (defconst IS-LINUX   (eq system-type 'gnu/linux))
+  (defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
+  (defconst IS-GUI (memq window-system '(mac ns x)))
+
+  ;; Make UTF-8 the default coding system
+  (when (fboundp 'set-charset-priority)
+    (set-charset-priority 'unicode))
+  (prefer-coding-system 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (unless IS-WINDOWS
+    (setq selection-coding-system 'utf-8))
+
+  ;; Reduce *Message* noise at startup. An empty scratch buffer (or the dashboard)
+  ;; is more than enough.
+  (setq inhibit-startup-message t
+        inhibit-startup-echo-area-message user-login-name
+        inhibit-default-init t
+        ;; Shave seconds off startup time by starting the scratch buffer in
+        ;; `fundamental-mode', rather than, say, `org-mode' or `text-mode', which
+        ;; pull in a ton of packages.
+        initial-major-mode 'fundamental-mode
+        initial-scratch-message nil)
+
+  ;;
+  ;;; Optimizations
+
+  ;; Disable bidirectional text rendering for a modest performance boost. I've set
+  ;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
+  ;; is an undefined state and suggest this to be just as good:
+  (setq-default bidi-display-reordering 'left-to-right
+                bidi-paragraph-direction 'left-to-right)
+
+  ;; Disabling the BPA makes redisplay faster, but might produce incorrect display
+  ;; reordering of bidirectional text with embedded parentheses and other bracket
+  ;; characters whose 'paired-bracket' Unicode property is non-nil.
+  (setq bidi-inhibit-bpa t)
+
+  ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
+  ;; in non-focused windows.
+  (setq-default cursor-in-non-selected-windows nil)
+  (setq highlight-nonselected-windows nil)
+
+  ;; More performant rapid scrolling over unfontified regions. May cause brief
+  ;; spells of inaccurate syntax highlighting right after scrolling, which should
+  ;; quickly self-correct.
+  (setq fast-but-imprecise-scrolling t)
+
+  ;; Resizing the Emacs frame can be a terribly expensive part of changing the
+  ;; font. By inhibiting this, we halve startup times, particularly when we use
+  ;; fonts that are larger than the system default (which would resize the frame).
+  (setq frame-inhibit-implied-resize t)
+
+  ;; Don't ping things that look like domain names.
+  (setq ffap-machine-p-known 'reject)
+
+  ;; Remove command line options that aren't relevant to our current OS; means
+  ;; slightly less to process at startup.
+  (unless IS-MAC   (setq command-line-ns-option-alist nil))
+  (unless IS-LINUX (setq command-line-x-option-alist nil))
+
+  ;; Adopt a sneaky garbage collection strategy of waiting until idle time to
+  ;; collect; staving off the collector while the user is working.
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold (* 16 1024 1024)  ; 16mb
+        gcmh-verbose nil)
+#+end_src
+
+* Core
+** Package Manager
+#+begin_src emacs-lisp
+  ;; bootstrap straight.el
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  ;; install use-package
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+#+end_src
+
+** Garbage Collector Magic Hack
+#+begin_src emacs-lisp
+  (use-package gcmh
+    :init
+    (gcmh-mode t))
+#+end_src
+
+** Projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :config
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (projectile-mode t))
+#+end_src
+
+** Key Bindings
+#+begin_src emacs-lisp
+  (use-package which-key
+    :config
+    (setq which-key-sort-order #'which-key-prefix-then-key-order
+          which-key-sort-uppercase-first nil
+          which-key-add-column-padding 1
+          which-key-max-display-columns nil
+          which-key-min-display-lines 6
+          which-key-side-window-slot -10)
+    (which-key-setup-side-window-bottom)
+    (which-key-mode +1))
+#+end_src
+
+* Emacs
+** dired
+#+begin_src emacs-lisp
+  (use-package dired
+    :straight nil
+    :init
+    (setq dired-auto-revert-buffer t
+	  dired-recursive-copies 'always
+	  dired-recursive-deletes 'top))
+
+  (use-package diredfl
+    :hook (dired-mode . diredfl-mode))
+#+end_src
+
+** ibuffer
+#+begin_src emacs-lisp
+  (use-package ibuffer-projectile
+    :hook (ibuffer . ibuffer-projectile-set-filter-groups))  
+#+end_src
+
+* Operational System
+** MacOSX
+#+begin_src emacs-lisp
+  ;; Visit files opened outside of Emacs in existing frame, not a new one
+  (setq ns-pop-up-frames nil)
+
+  ;; sane trackpad/mouse scroll settings
+  (setq mac-redisplay-dont-reset-vscroll t
+        mac-mouse-wheel-smooth-scroll nil)
+
+  ;; fix PATH, exec-path
+  (use-package exec-path-from-shell
+    :init
+    (with-eval-after-load 'exec-path-from-shell
+      (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
+        (add-to-list 'exec-path-from-shell-variables var)))
+    (setq exec-path-from-shell-check-startup-files nil)
+    (when (or IS-GUI (daemonp))
+      (exec-path-from-shell-initialize)))
+#+end_src
+
+* User Interface
+** General
+#+begin_src emacs-lisp
+  ;; remove tool bar
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+
+  ;; remove scroll bar
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+
+  ;; disable blink cursor
+  (blink-cursor-mode -1)
+
+  ;; theme
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold nil)
+    (setq doom-themes-enable-italic nil)
+    (load-theme 'doom-one t)
+    (doom-themes-org-config))
+
+  ;; highlight the current line
+  (use-package hl-line
+    :hook
+    ((prog-mode text-mode conf-mode special-mode) . hl-line-mode)
+    :config
+    (setq hl-line-sticky-flag nil
+          global-hl-line-sticky-flag nil)
+    (hl-line-mode t))
+
+  ;; nice scrolling
+  (setq scroll-margin 0
+        scroll-conservatively 100000
+        scroll-preserve-screen-position 1)
+
+  ;; disable startup screen
+  (setq inhibit-startup-screen t)
+
+  ;; set font
+  (add-to-list 'default-frame-alist
+               '(font . "Menlo-14"))
+  (defun en/set-bigger-spacing ()
+    (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
+  (add-hook 'text-mode-hook 'en/set-bigger-spacing)
+  (add-hook 'prog-mode-hook 'en/set-bigger-spacing)
+
+  ;; add support to emoji
+  (set-fontset-font
+   t
+   '(#x1f300 . #x1fad0)
+   (cond
+    ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji")))
+
+  ;; set default GUI window size
+  (add-to-list 'default-frame-alist
+               '(width . 200))
+  (add-to-list 'default-frame-alist
+               '(height . 45))
+#+end_src
+
+** Modeline
+#+begin_src emacs-lisp
+  ;; show column number
+  (column-number-mode t)
+
+  ;; show buffer size
+  (size-indication-mode t)   
+#+end_src
+
+** Window Select
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :init
+    (global-set-key [remap other-window] #'ace-window)
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+	  aw-scope 'frame
+	  aw-background t))
+#+end_src
+
+** Quit
+#+begin_src emacs-lisp
+  ;; quit frame
+  (setq confirm-kill-emacs 'y-or-n-p)
+  ;; quit buffer
+  (setq-default buffer-quit-function
+                #'(lambda () (message "Are you trying to quit?")))
+#+end_src
+
+** Git Gutter
+[[https://github.com/emacsorphanage/git-gutter][git-gutter.el]] is an Emacs port of Sublime Text plugin GitGutter.
+
+#+begin_src emacs-lisp
+  (use-package git-gutter
+    :init
+    (setq git-gutter:disabled-modes '(fundamental-mode image-mode pdf-view-mode))
+    (global-git-gutter-mode t)
+    :config
+    (setq git-gutter:handled-backends '(git)))
+#+end_src
+* Version Control
+#+begin_src emacs-lisp
+  (use-package browse-at-remote
+    :bind ("C-c g g" . browse-at-remote)
+    :config
+    (setq browse-at-remote-add-line-number-if-no-region-selected nil))
+#+end_src
+
+* Completion
+** Ivy
+#+begin_src emacs-lisp
+  (use-package ivy
+    :config
+    (require 'counsel nil t)
+    (setq ivy-sort-max-size 7500
+          ivy-height 17
+          ivy-wrap t
+          ivy-fixed-height-minibuffer t
+          projectile-completion-system 'ivy
+          ;; disable magic slash on non-match
+          ivy-magic-slash-non-match-action nil
+          ;; don't show recent files in switch-buffer
+          ivy-use-virtual-buffers nil
+          ;; ...but if that ever changes, show their full path
+          ivy-virtual-abbreviate 'full
+          ;; don't quit minibuffer on delete-error
+          ivy-on-del-error-function #'ignore
+          ;; enable ability to select prompt (alternative to `ivy-immediate-done')
+          ivy-use-selectable-prompt t))
+
+  (use-package counsel)
+#+end_src
+
+* Languages
+** Org
+*** General
+#+begin_src emacs-lisp
+  (use-package org
+    :straight (:local-repo nil)
+    :init
+    (setq org-directory "~/Dropbox/org")
+    (require 'org-tempo)
+    (add-hook 'org-mode-hook 'turn-on-auto-fill)
+    :config
+    (setq org-export-coding-system 'utf-8
+          org-startup-indented t)
+    :bind
+    ("C-c c" . org-capture)
+    ("C-c a" . org-agenda))
+#+end_src
+
+*** HTML
+#+begin_src emacs-lisp
+  (use-package htmlize)   
+#+end_src
+
+*** Ledger
+#+begin_src emacs-lisp
+  ;; force 0 indentation when ledger-mode
+  (define-advice org-edit-src-exit (:before (&rest _args))
+    "Set org-src-preserve-indentation."
+    (if (eq major-mode 'ledger-mode)
+        (setq org-edit-src-content-indentation 0)
+      (setq org-edit-src-content-indentation 2)))   
+#+end_src
+
+*** Get Things Done (GTD)
+#+begin_src emacs-lisp
+  (setq en/gtd-inbox (expand-file-name "gtd/inbox.org" org-directory))
+  (setq en/gtd-gtd (expand-file-name "gtd/gtd.org" org-directory))
+  (setq en/gtd-tickler (expand-file-name "gtd/tickler.org" org-directory))
+  (setq en/gtd-someday (expand-file-name "gtd/someday.org" org-directory))
+
+  (setq org-agenda-files (list en/gtd-inbox en/gtd-gtd en/gtd-tickler))
+  (setq org-refile-targets '((en/gtd-gtd :maxlevel . 3)
+                             (en/gtd-someday :level . 1)
+                             (en/gtd-tickler :maxlevel . 2)))
+
+  (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                                 (file+headline en/gtd-inbox "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline en/gtd-tickler "Tickler")
+                                 "* %i%? \n %U")))
+
+  (setq org-use-fast-todo-selection t)
+
+  (setq org-log-done (quote time))
+  (setq org-log-into-drawer t)
+  (setq org-log-state-notes-insert-after-drawers nil)
+
+  (setq org-todo-keywords
+        (quote ((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "|" "DONE(d)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "tomato1" :weight normal)
+                ("NEXT" :foreground "SkyBlue1" :weight normal)
+                ("IN-PROGRESS" :foreground "CadetBlue1" :weight normal)
+                ("DONE" :foreground "MediumSeaGreen" :weight normal)
+                ("WAITING" :foreground "DarkOrange1" :weight normal)
+                ("HOLD" :foreground "magenta2" :weight normal)
+                ("CANCELLED" :foreground "MediumSeaGreen" :weight normal)
+                ("MEETING" :foreground "MediumSeaGreen" :weight normal)
+                ("PHONE" :foreground "MediumSeaGreen" :weight normal))))
+#+end_src
+
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :mode (("\\.md\\'" . gfm-mode)
+           ("\\.markdown\\'" . gfm-mode))
+    :init
+    ;; enable auto-fill
+    ;; (add-hook 'markdown-mode-hook 'auto-fill-mode)
+    :config)
+    ;; (set-face-attribute 'markdown-code-face nil :inherit nil)
+    ;; (setq markdown-fontify-code-blocks-natively t))
+#+end_src
+
+** Terraform
+#+begin_src emacs-lisp
+  (use-package terraform-mode
+    :hook
+    ;; (terraform-mode . company-mode)
+    (before-save . terraform-format-buffer))
+#+end_src
+
+** YAML
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :config
+    (add-hook 'yaml-mode-hook (lambda () (setq tab-width yaml-indent-offset))))
+#+end_src
+
+** Ledger
+#+begin_src emacs-lisp
+  (use-package ledger-mode)
+
+  (use-package flycheck-ledger
+    :config
+    (setq ledger-default-date-format "%Y-%m-%d")
+    (add-hook 'ledger-mode-hook 'flycheck-mode))
+#+end_src
+
+* Tools
+** Shadowenv
+[[https://github.com/Shopify/shadowenv][Shadowenv]] provides a way to perform a set of manipulations to the process
+environment upon entering a directory in a shell. These manipulations are
+reversed when leaving the directory, and there is some limited ability to make
+the manipulations dynamic.
+
+#+begin_src emacs-lisp
+  (use-package shadowenv
+    :hook (after-init . shadowenv-global-mode))
+#+end_src
+
+** EditorConfig
+#+begin_src emacs-lisp
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+#+end_src
+
+** Roam
+[[https://github.com/org-roam/org-roam][org-roam]] is a solution for effortless non-hierarchical note-taking
+with Org-mode. With Org-roam, notes flow naturally, making note-taking
+fun and easy. Org-roam should also work as a plug-and-play solution
+for anyone already using Org-mode for their personal wiki.
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :after org
+    :hook
+    (after-init . org-roam-mode)
+    :init
+    (setq org-roam-directory (expand-file-name "roam" org-directory))
+    (unless (file-exists-p org-roam-directory)
+      (make-directory org-roam-directory))
+    :bind (:map org-roam-mode-map
+                (("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n g" . org-roam-graph-show))
+                :map org-mode-map
+                (("C-c n i" . org-roam-insert))
+                (("C-c n I" . org-roam-insert-immediate))))
+#+end_src
+
