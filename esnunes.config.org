@@ -71,6 +71,20 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 16 1024 1024)  ; 16mb
         gcmh-verbose nil)
+
+  ;; enable y/n answers
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; store all backup and autosave files in the tmp dir
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
+
+  ;; uncomment the lines below in case you want to completely disable
+  ;; auto-save and auto-backup
+  ;; (setq auto-save-default nil)
+  ;; (setq make-backup-files nil)
 #+end_src
 
 * Core
@@ -108,6 +122,11 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     :config
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (projectile-mode t))
+#+end_src
+
+** Search
+#+begin_src emacs-lisp
+  (use-package ripgrep)
 #+end_src
 
 ** Key Bindings
@@ -207,10 +226,11 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;; set font
   (add-to-list 'default-frame-alist
                '(font . "Menlo-14"))
-  (defun en/set-bigger-spacing ()
-    (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
-  (add-hook 'text-mode-hook 'en/set-bigger-spacing)
-  (add-hook 'prog-mode-hook 'en/set-bigger-spacing)
+  (setq-default line-spacing 4)
+  ;; (defun en/set-bigger-spacing ()
+  ;;   (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
+  ;; (add-hook 'text-mode-hook 'en/set-bigger-spacing)
+  ;; (add-hook 'prog-mode-hook 'en/set-bigger-spacing)
 
   ;; add support to emoji
   (set-fontset-font
@@ -221,9 +241,12 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 
   ;; set default GUI window size
   (add-to-list 'default-frame-alist
-               '(width . 200))
+               '(width . 130))
   (add-to-list 'default-frame-alist
                '(height . 45))
+
+  ;; set cursor shape
+  (setq-default cursor-type 'hbar)
 #+end_src
 
 ** Modeline
@@ -296,7 +319,35 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
           ;; enable ability to select prompt (alternative to `ivy-immediate-done')
           ivy-use-selectable-prompt t))
 
-  (use-package counsel)
+  (use-package counsel
+    :defer t
+    :init
+    (define-key (current-global-map) [remap apropos] #'counsel-apropos)
+    (define-key (current-global-map) [remap bookmark-jump] #'counsel-bookmark)
+    (define-key (current-global-map) [remap compile] #'+ivy/compile)
+    (define-key (current-global-map) [remap describe-bindings] #'counsel-descbinds)
+    (define-key (current-global-map) [remap describe-face] #'counsel-faces)
+    (define-key (current-global-map) [remap describe-function] #'counsel-describe-function)
+    (define-key (current-global-map) [remap describe-variable] #'counsel-describe-variable)
+    (define-key (current-global-map) [remap execute-extended-command] #'counsel-M-x)
+    (define-key (current-global-map) [remap find-file] #'counsel-find-file)
+    (define-key (current-global-map) [remap find-library] #'counsel-find-library)
+    (define-key (current-global-map) [remap imenu] #'counsel-imenu)
+    (define-key (current-global-map) [remap info-lookup-symbol] #'counsel-info-lookup-symbol)
+    (define-key (current-global-map) [remap load-theme] #'counsel-load-theme)
+    (define-key (current-global-map) [remap locate] #'counsel-locate)
+    (define-key (current-global-map) [remap org-goto] #'counsel-org-goto)
+    (define-key (current-global-map) [remap org-set-tags-command] #'counsel-org-tag)
+    (define-key (current-global-map) [remap projectile-compile-project] #'+ivy/project-compile)
+    (define-key (current-global-map) [remap recentf-open-files] #'counsel-recentf)
+    (define-key (current-global-map) [remap set-variable] #'counsel-set-variable)
+    (define-key (current-global-map) [remap swiper] #'counsel-grep-or-swiper)
+    (define-key (current-global-map) [remap unicode-chars-list-chars] #'counsel-unicode-char)
+    (define-key (current-global-map) [remap yank-pop] #'counsel-yank-pop))
+
+  (use-package swiper
+    :config
+    (define-key (current-global-map) [remap isearch-forward] 'swiper))
 #+end_src
 
 * Languages
@@ -411,6 +462,23 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (add-hook 'ledger-mode-hook 'flycheck-mode))
 #+end_src
 
+** Ruby
+#+begin_src emacs-lisp
+  (use-package ruby-test-mode
+    :config
+    (add-hook 'ruby-mode-hook 'ruby-test-mode))
+#+end_src
+
+** Swift
+#+begin_src emacs-lisp
+  (use-package swift-mode)
+#+end_src
+
+** Odin
+#+begin_src emacs-lisp
+  (require 'odin-mode)
+  (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
+#+end_src
 * Tools
 ** Shadowenv
 [[https://github.com/Shopify/shadowenv][Shadowenv]] provides a way to perform a set of manipulations to the process
