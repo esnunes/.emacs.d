@@ -368,14 +368,6 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     ("C-c a" . org-agenda))
 #+end_src
 
-*** C
-#+begin_src emacs-lisp
-  (defun en-c-indent-setup ()
-    (c-set-offset 'arglist-intro '+)
-    (c-set-offset 'arglist-close 0))
-  (add-hook 'c-mode 'en-c-indent-setup)
-#+end_src
-
 *** HTML
 #+begin_src emacs-lisp
   (use-package htmlize)   
@@ -432,6 +424,13 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
                 ("PHONE" :foreground "MediumSeaGreen" :weight normal))))
 #+end_src
 
+** C
+#+begin_src emacs-lisp
+  (defun en-c-indent-setup ()
+    (c-set-offset 'arglist-intro '+)
+    (c-set-offset 'arglist-close 0))
+  (add-hook 'c-mode-common-hook 'en-c-indent-setup)
+#+end_src
 ** Markdown
 #+begin_src emacs-lisp
   (use-package markdown-mode
