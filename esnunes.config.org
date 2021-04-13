@@ -426,10 +426,11 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 
 ** C
 #+begin_src emacs-lisp
-  (defun en-c-indent-setup ()
+  (defun en-c-setup ()
     (c-set-offset 'arglist-intro '+)
-    (c-set-offset 'arglist-close 0))
-  (add-hook 'c-mode-common-hook 'en-c-indent-setup)
+    (c-set-offset 'arglist-close 0)
+    (subword-mode 1))
+  (add-hook 'c-mode-common-hook 'en-c-setup)
 #+end_src
 ** Markdown
 #+begin_src emacs-lisp
