@@ -448,9 +448,8 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 ** Terraform
 #+begin_src emacs-lisp
   (use-package terraform-mode
-    :hook
-    ;; (terraform-mode . company-mode)
-    (before-save . terraform-format-buffer))
+    :init
+    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
 #+end_src
 
 ** YAML
