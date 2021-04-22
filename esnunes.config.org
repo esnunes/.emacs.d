@@ -317,7 +317,8 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
           ;; don't quit minibuffer on delete-error
           ivy-on-del-error-function #'ignore
           ;; enable ability to select prompt (alternative to `ivy-immediate-done')
-          ivy-use-selectable-prompt t))
+          ivy-use-selectable-prompt t)
+    (ivy-mode))
 
   (use-package counsel
     :defer t
