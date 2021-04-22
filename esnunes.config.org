@@ -351,6 +351,22 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (define-key (current-global-map) [remap isearch-forward] 'swiper))
 #+end_src
 
+** Company
+#+begin_src emacs-lisp
+  (use-package company
+    :bind
+    (:map company-active-map
+          ("C-n" . company-select-next)
+          ("C-p" . company-select-previous)
+          ("M-TAB" . company-complete-common-or-cycle)
+          ("<tab>" . company-complete-common-or-cycle))
+    :config
+    (setq company-idle-delay 0.3)
+    (setq company-minimum-prefix-length 2)
+    (global-company-mode t)
+    (global-set-key (kbd "TAB") 'company-indent-or-complete-common))
+#+end_src
+
 * Languages
 ** Org
 *** General
