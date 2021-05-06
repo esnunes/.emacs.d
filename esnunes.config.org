@@ -81,7 +81,8 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 
   (when IS-MAC
     (global-set-key (kbd "s-n") 'make-frame-command) ;; open new mac window
-    (global-set-key (kbd "s-w") 'delete-frame)) ;; close mac window
+    (global-set-key (kbd "s-w") 'delete-frame) ;; close mac window
+    (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)) ;; terminate connection
 
   ;; store all backup and autosave files in the tmp dir
   (setq backup-directory-alist
