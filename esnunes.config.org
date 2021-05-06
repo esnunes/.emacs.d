@@ -521,9 +521,9 @@ the manipulations dynamic.
 
 ** EditorConfig
 #+begin_src emacs-lisp
-(use-package editorconfig
-  :config
-  (editorconfig-mode 1))
+  (use-package editorconfig
+    :config
+    (editorconfig-mode 1))
 #+end_src
 
 ** Roam
