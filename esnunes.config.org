@@ -514,8 +514,9 @@ reversed when leaving the directory, and there is some limited ability to make
 the manipulations dynamic.
 
 #+begin_src emacs-lisp
-  (use-package shadowenv
-    :hook (after-init . shadowenv-global-mode))
+  (if (executable-find "shadowenv")
+      (use-package shadowenv
+        :hook (after-init . shadowenv-global-mode)))
 #+end_src
 
 ** EditorConfig
