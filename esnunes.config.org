@@ -75,8 +75,13 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;; enable y/n answers
   (fset 'yes-or-no-p 'y-or-n-p)
 
-  ;; force alt to work as meta (M)
-  (if IS-MAC (setq mac-option-modifier 'meta))
+  (when IS-MAC
+    (setq mac-option-modifier 'meta) ;; set Option to Meta
+    (setq mac-command-modifier 'super)) ;; set Command to Super
+
+  (when IS-MAC
+    (global-set-key (kbd "s-n") 'make-frame-command) ;; open new mac window
+    (global-set-key (kbd "s-w") 'delete-frame)) ;; close mac window
 
   ;; store all backup and autosave files in the tmp dir
   (setq backup-directory-alist
