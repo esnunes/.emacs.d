@@ -540,7 +540,7 @@ for anyone already using Org-mode for their personal wiki.
     :init
     (setq org-roam-directory (expand-file-name "roam" org-directory))
     (unless (file-exists-p org-roam-directory)
-      (make-directory org-roam-directory))
+      (make-directory org-roam-directory :parents))
     :bind (:map org-roam-mode-map
                 (("C-c n l" . org-roam)
                  ("C-c n f" . org-roam-find-file)
