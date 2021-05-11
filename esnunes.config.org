@@ -386,7 +386,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (use-package org
     :straight (:local-repo nil)
     :init
-    (setq org-directory "~/Dropbox/org")
+    (setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org")
     (require 'org-tempo)
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     :config
