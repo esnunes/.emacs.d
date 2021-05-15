@@ -86,7 +86,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 
   ;; store all backup and autosave files in the tmp dir
   (setq backup-directory-alist
-        '((".*" . temporary-file-directory)))
+        `(("." . ,temporary-file-directory)))
   (setq auto-save-file-name-transforms
         `((".*" ,temporary-file-directory t)))
 
@@ -386,7 +386,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (use-package org
     :straight (:local-repo nil)
     :init
-    (setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org")
+    (setq org-directory "~/iCloud/org")
     (require 'org-tempo)
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     :config
