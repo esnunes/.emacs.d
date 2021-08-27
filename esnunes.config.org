@@ -13,7 +13,8 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (require 'package)
   (setq package-archives
         '(("elpa" . "https://elpa.gnu.org/packages/")
-          ("melpa" . "https://melpa.org/packages/")))
+          ("melpa" . "https://melpa.org/packages/")
+          ("org" . "https://orgmode.org/elpa/")))
 
   ;; keep the installed packages in .emacs.d
   (setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
@@ -226,14 +227,14 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;; remove tool bar
   (when (fboundp 'tool-bar-mode)
     (tool-bar-mode -1))
-
+  
   ;; remove scroll bar
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode -1))
-
+  
   ;; disable blink cursor
   (blink-cursor-mode -1)
-
+  
   ;; theme
   (use-package doom-themes
     :ensure t
@@ -242,7 +243,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (setq doom-themes-enable-italic nil)
     (load-theme 'doom-one t)
     (doom-themes-org-config))
-
+  
   ;; highlight the current line
   (use-package hl-line
     :ensure t
@@ -252,37 +253,40 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (setq hl-line-sticky-flag nil
           global-hl-line-sticky-flag nil)
     (hl-line-mode t))
-
+  
   ;; nice scrolling
   (setq scroll-margin 0
         scroll-conservatively 100000
         scroll-preserve-screen-position 1)
-
+  
   ;; disable startup screen
   (setq inhibit-startup-screen t)
-
+  
   ;; set font
-  (add-to-list 'default-frame-alist
-               '(font . "Menlo-12"))
+  (if IS-LINUX
+      (add-to-list 'default-frame-alist
+                   '(font . "DejaVu Sans Mono-18"))
+    (add-to-list 'default-frame-alist
+                 '(font . "Menlo-12")))
   (setq-default line-spacing 4)
   ;; (defun en/set-bigger-spacing ()
   ;;   (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
   ;; (add-hook 'text-mode-hook 'en/set-bigger-spacing)
   ;; (add-hook 'prog-mode-hook 'en/set-bigger-spacing)
-
+  
   ;; add support to emoji
   (set-fontset-font
    t
    '(#x1f300 . #x1fad0)
    (cond
     ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji")))
-
+  
   ;; set default GUI window size
   (add-to-list 'default-frame-alist
                '(width . 130))
   (add-to-list 'default-frame-alist
                '(height . 45))
-
+  
   ;; set cursor shape
   (setq-default cursor-type 'hbar)
 #+end_src
