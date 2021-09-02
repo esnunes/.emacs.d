@@ -343,6 +343,11 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (setq browse-at-remote-add-line-number-if-no-region-selected nil))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
+#+end_src
+
 * Completion
 ** Ivy
 #+begin_src emacs-lisp
