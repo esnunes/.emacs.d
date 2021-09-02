@@ -267,7 +267,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
       (add-to-list 'default-frame-alist
                    '(font . "DejaVu Sans Mono-18"))
     (add-to-list 'default-frame-alist
-                 '(font . "Menlo-12")))
+                 '(font . "DejaVu Sans Mono-12")))
   (setq-default line-spacing 4)
   ;; (defun en/set-bigger-spacing ()
   ;;   (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
