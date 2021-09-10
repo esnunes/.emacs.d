@@ -566,6 +566,15 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     :ensure t)
 #+end_src
 
+** Rust
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :custom
+    (indent-tabs-mode nil)
+    (rust-format-on-save t))
+#+end_src
+
 ** Odin
 #+begin_src emacs-lisp
   (require 'odin-mode)
