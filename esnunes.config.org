@@ -421,8 +421,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (setq company-idle-delay 0.3)
     (setq company-minimum-prefix-length 2)
     (setq company-tooltip-align-annotations 't)
-    (global-company-mode '(c-mode c++-mode lisp-mode))
-    (global-set-key (kbd "<tab>") 'company-indent-or-complete-common))
+    (global-company-mode '(not org-mode)))
 #+end_src
 
 * Languages
