@@ -608,6 +608,46 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (add-hook 'rustic-mode-hook 'flycheck-mode))
 #+end_src
 
+** Web
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :custom
+    (web-mode-enable-auto-quoting nil)
+    (web-mode-markup-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-attr-indent-offset 2)
+    (web-mode-attr-value-indent-offset 2))
+#+end_src
+
+** Typescript
+#+begin_src emacs-lisp
+  (defun en/tide-setup ()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    (company-mode +1))
+  
+  ;; aligns annotation to the right hand side
+  (setq company-tooltip-align-annotations t)
+  
+  ;; formats the buffer before saving
+  (add-hook 'before-save-hook 'tide-format-before-save)
+  (add-hook 'typescript-mode-hook #'en/tide-setup)
+  
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (en/tide-setup))))
+  ;; enable typescript-tslint checker
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+#+end_src
+
 ** Odin
 #+begin_src emacs-lisp
   (require 'odin-mode)
