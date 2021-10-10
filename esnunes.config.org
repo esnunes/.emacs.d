@@ -622,6 +622,9 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 
 ** Typescript
 #+begin_src emacs-lisp
+  (use-package tide
+    :ensure t)
+
   (defun en/tide-setup ()
     (interactive)
     (tide-setup)
@@ -630,14 +633,14 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (eldoc-mode +1)
     (tide-hl-identifier-mode +1)
     (company-mode +1))
-  
+
   ;; aligns annotation to the right hand side
   (setq company-tooltip-align-annotations t)
-  
+
   ;; formats the buffer before saving
   (add-hook 'before-save-hook 'tide-format-before-save)
   (add-hook 'typescript-mode-hook #'en/tide-setup)
-  
+
   (require 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook 'web-mode-hook
