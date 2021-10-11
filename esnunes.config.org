@@ -620,6 +620,13 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (web-mode-attr-value-indent-offset 2))
 #+end_src
 
+** Javascript
+A quick and dirty emacs major mode for Prisma schemas.
+
+#+begin_src emacs-lisp
+  (require 'prisma-mode)
+#+end_src
+
 ** Typescript
 #+begin_src emacs-lisp
   (use-package tide
