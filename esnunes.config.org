@@ -117,6 +117,9 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;; auto-save and auto-backup
   ;; (setq auto-save-default nil)
   ;; (setq make-backup-files nil)
+
+  ;; enable cursor to move by camelCase and snake_case
+  (global-subword-mode)
 #+end_src
 
 * Core
@@ -528,8 +531,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 #+begin_src emacs-lisp
   (defun en-c-setup ()
     (c-set-offset 'arglist-intro '+)
-    (c-set-offset 'arglist-close 0)
-    (subword-mode 1))
+    (c-set-offset 'arglist-close 0))
   (add-hook 'c-mode-common-hook 'en-c-setup)
 #+end_src
 ** Markdown
