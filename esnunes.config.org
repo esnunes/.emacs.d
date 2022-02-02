@@ -203,6 +203,13 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     :hook (ibuffer . ibuffer-projectile-set-filter-groups))  
 #+end_src
 
+** flycheck
+Syntax checking
+
+#+begin_src emacs-lisp
+  (setq flycheck-checker-error-threshold 100)
+#+end_src
+
 * Operational System
 ** MacOSX
 #+begin_src emacs-lisp
