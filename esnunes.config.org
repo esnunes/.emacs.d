@@ -460,6 +460,7 @@ Syntax checking
     (setq company-idle-delay 0.3)
     (setq company-minimum-prefix-length 2)
     (setq company-tooltip-align-annotations 't)
+    (setq lsp-completion-provider :capf)
     (global-company-mode '(not org-mode)))
 #+end_src
 
