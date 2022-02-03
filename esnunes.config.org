@@ -748,3 +748,15 @@ for anyone already using Org-mode for their personal wiki.
   ;;             (("C-c n I" . org-roam-insert-immediate))))
 #+end_src
 
+
+** VTerm
+In order to install vterm you need =cmake= and =libvterm= (or
+=libvterm-dev= in case the non-dev version is not available).
+
+#+begin_src emacs-lisp
+  (use-package vterm
+    :ensure t
+    :config
+    (setq vterm-disable-bold t)
+    (setq vterm-disable-underline t))
+#+end_src
