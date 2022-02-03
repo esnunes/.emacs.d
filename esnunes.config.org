@@ -9,29 +9,29 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (defconst IS-LINUX   (eq system-type 'gnu/linux))
   (defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
   (defconst IS-GUI (memq window-system '(mac ns x)))
-  
+
   (require 'package)
   (setq package-archives
         '(("elpa" . "https://elpa.gnu.org/packages/")
           ("melpa" . "https://melpa.org/packages/")
           ("org" . "https://orgmode.org/elpa/")))
-  
+
   ;; keep the installed packages in .emacs.d
   (setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
-  
+
   (package-initialize)
-  
+
   ;; update the package metadata is the local cache is missing
   (unless package-archive-contents
     (package-refresh-contents))
-  
+
   ;; install use-package
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
-  
+
   (require 'use-package)
   (setq use-package-verbose t)
-  
+
   ;; Make UTF-8 the default coding system
   (when (fboundp 'set-charset-priority)
     (set-charset-priority 'unicode))
@@ -40,7 +40,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   (unless IS-WINDOWS
     (setq selection-coding-system 'utf-8))
   (setq-default buffer-file-coding-system 'utf-8-unix)
-  
+
   ;; Reduce *Message* noise at startup. An empty scratch buffer (or the dashboard)
   ;; is more than enough.
   (setq inhibit-startup-message t
@@ -51,62 +51,62 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
         ;; pull in a ton of packages.
         initial-major-mode 'fundamental-mode
         initial-scratch-message nil)
-  
+
   ;;
   ;;; Optimizations
-  
+
   ;; Disable bidirectional text rendering for a modest performance boost. I've set
   ;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
   ;; is an undefined state and suggest this to be just as good:
   (setq-default bidi-display-reordering 'left-to-right
                 bidi-paragraph-direction 'left-to-right)
-  
+
   ;; Disabling the BPA makes redisplay faster, but might produce incorrect display
   ;; reordering of bidirectional text with embedded parentheses and other bracket
   ;; characters whose 'paired-bracket' Unicode property is non-nil.
   (setq bidi-inhibit-bpa t)
-  
+
   ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
   ;; in non-focused windows.
   (setq-default cursor-in-non-selected-windows nil)
   (setq highlight-nonselected-windows nil)
-  
+
   ;; More performant rapid scrolling over unfontified regions. May cause brief
   ;; spells of inaccurate syntax highlighting right after scrolling, which should
   ;; quickly self-correct.
   (setq fast-but-imprecise-scrolling t)
-  
+
   ;; Resizing the Emacs frame can be a terribly expensive part of changing the
   ;; font. By inhibiting this, we halve startup times, particularly when we use
   ;; fonts that are larger than the system default (which would resize the frame).
   (setq frame-inhibit-implied-resize t)
-  
+
   ;; Don't ping things that look like domain names.
   (setq ffap-machine-p-known 'reject)
-  
+
   ;; Remove command line options that aren't relevant to our current OS; means
   ;; slightly less to process at startup.
   (unless IS-MAC   (setq command-line-ns-option-alist nil))
   (unless IS-LINUX (setq command-line-x-option-alist nil))
-  
+
   ;; Adopt a sneaky garbage collection strategy of waiting until idle time to
   ;; collect; staving off the collector while the user is working.
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 16 1024 1024)  ; 16mb
         gcmh-verbose nil)
-  
+
   ;; enable y/n answers
   (fset 'yes-or-no-p 'y-or-n-p)
-  
+
   (when IS-MAC
     (setq mac-option-modifier 'meta) ;; set Option to Meta
     (setq mac-command-modifier 'super)) ;; set Command to Super
-  
+
   (when IS-MAC
     (global-set-key (kbd "s-n") 'make-frame-command) ;; open new mac window
     (global-set-key (kbd "s-w") 'delete-frame) ;; close mac window
     (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)) ;; terminate connection
-  
+
   ;; store all backup and autosave files in the tmp dir
   (setq backup-directory-alist
         `((".*" . ,temporary-file-directory)))
@@ -117,7 +117,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;; auto-save and auto-backup
   ;; (setq auto-save-default nil)
   ;; (setq make-backup-files nil)
-  
+
   ;; enable cursor to move by camelCase and snake_case
   (global-subword-mode)
 #+end_src
@@ -138,7 +138,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
   ;;       (goto-char (point-max))
   ;;       (eval-print-last-sexp)))
   ;;   (load bootstrap-file nil 'nomessage))
-  
+
   ;; ;; install use-package
   ;; (straight-use-package 'use-package)
   ;; (setq straight-use-package-by-default t)
@@ -190,7 +190,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
     (setq dired-auto-revert-buffer t
           dired-recursive-copies 'always
           dired-recursive-deletes 'top))
-  
+
   (use-package diredfl
     :ensure t
     :hook (dired-mode . diredfl-mode))
@@ -200,7 +200,7 @@ Many of the settings listed below were copied from [[https://github.com/hlissner
 #+begin_src emacs-lisp
   (use-package ibuffer-projectile
     :ensure t
-    :hook (ibuffer . ibuffer-projectile-set-filter-groups))  
+    :hook (ibuffer . ibuffer-projectile-set-filter-groups))
 #+end_src
 
 ** flycheck
@@ -215,11 +215,11 @@ Syntax checking
 #+begin_src emacs-lisp
   ;; Visit files opened outside of Emacs in existing frame, not a new one
   (setq ns-pop-up-frames nil)
-  
+
   ;; sane trackpad/mouse scroll settings
   (setq mac-redisplay-dont-reset-vscroll t
         mac-mouse-wheel-smooth-scroll nil)
-  
+
   ;; fix PATH, exec-path
   (use-package exec-path-from-shell
     :ensure t
@@ -315,9 +315,9 @@ Syntax checking
 #+begin_src emacs-lisp
   ;; show column number
   (column-number-mode t)
-  
+
   ;; show buffer size
-  (size-indication-mode t)   
+  (size-indication-mode t)
 #+end_src
 
 ** Window Select
@@ -381,7 +381,7 @@ Syntax checking
     (lsp-rust-analyzer-server-display-inlay-hints t)
     :config
     (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-  
+
   (use-package lsp-ui
     :ensure t
     :commands lsp-ui-mode
@@ -413,7 +413,7 @@ Syntax checking
           ;; enable ability to select prompt (alternative to `ivy-immediate-done')
           ivy-use-selectable-prompt t)
     (ivy-mode))
-  
+
   (use-package counsel
     :ensure t
     :defer t
@@ -440,7 +440,7 @@ Syntax checking
     (define-key (current-global-map) [remap swiper] #'counsel-grep-or-swiper)
     (define-key (current-global-map) [remap unicode-chars-list-chars] #'counsel-unicode-char)
     (define-key (current-global-map) [remap yank-pop] #'counsel-yank-pop))
-  
+
   (use-package swiper
     :ensure t
     :config
@@ -500,7 +500,7 @@ Syntax checking
     "Set org-src-preserve-indentation."
     (if (eq major-mode 'ledger-mode)
         (setq org-edit-src-content-indentation 0)
-      (setq org-edit-src-content-indentation 2)))   
+      (setq org-edit-src-content-indentation 2)))
 #+end_src
 
 *** Get Things Done (GTD)
@@ -509,29 +509,29 @@ Syntax checking
   (setq en/gtd-gtd (expand-file-name "gtd/gtd.org" org-directory))
   (setq en/gtd-tickler (expand-file-name "gtd/tickler.org" org-directory))
   (setq en/gtd-someday (expand-file-name "gtd/someday.org" org-directory))
-  
+
   (setq org-agenda-files (list en/gtd-inbox en/gtd-gtd en/gtd-tickler))
   (setq org-refile-targets '((en/gtd-gtd :maxlevel . 3)
                              (en/gtd-someday :level . 1)
                              (en/gtd-tickler :maxlevel . 2)))
-  
+
   (setq org-capture-templates '(("t" "Todo [inbox]" entry
                                  (file+headline en/gtd-inbox "Tasks")
                                  "* TODO %i%?")
                                 ("T" "Tickler" entry
                                  (file+headline en/gtd-tickler "Tickler")
                                  "* %i%? \n %U")))
-  
+
   (setq org-use-fast-todo-selection t)
-  
+
   (setq org-log-done (quote time))
   (setq org-log-into-drawer t)
   (setq org-log-state-notes-insert-after-drawers nil)
-  
+
   (setq org-todo-keywords
         (quote ((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "|" "DONE(d)")
                 (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
-  
+
   (setq org-todo-keyword-faces
         (quote (("TODO" :foreground "tomato1" :weight normal)
                 ("NEXT" :foreground "SkyBlue1" :weight normal)
@@ -585,7 +585,7 @@ Syntax checking
 #+begin_src emacs-lisp
   (use-package ledger-mode
     :ensure t)
-  
+
   (use-package flycheck-ledger
     :ensure t
     :config
@@ -604,12 +604,12 @@ Syntax checking
     (setq enh-ruby-deep-indent-construct nil
           enh-ruby-deep-indent-paren nil
           enh-ruby-indent-tabs-mode t))
-  
+
   (use-package ruby-test-mode
     :ensure t
     :config
     (add-hook 'enh-ruby-mode-hook 'ruby-test-mode))
-  
+
   (use-package chruby
     :ensure t)
 #+end_src
@@ -663,7 +663,7 @@ A quick and dirty emacs major mode for Prisma schemas.
 #+begin_src emacs-lisp
   (use-package tide
     :ensure t)
-  
+
   (defun en/tide-setup ()
     (interactive)
     (tide-setup)
@@ -672,14 +672,14 @@ A quick and dirty emacs major mode for Prisma schemas.
     (eldoc-mode +1)
     (tide-hl-identifier-mode +1)
     (company-mode +1))
-  
+
   ;; aligns annotation to the right hand side
   (setq company-tooltip-align-annotations t)
-  
+
   ;; formats the buffer before saving
   (add-hook 'before-save-hook 'tide-format-before-save)
   (add-hook 'typescript-mode-hook #'en/tide-setup)
-  
+
   (require 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook 'web-mode-hook
