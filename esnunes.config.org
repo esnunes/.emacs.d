@@ -249,6 +249,9 @@ Syntax checking
   ;; disable blink cursor
   (blink-cursor-mode -1)
 
+  ;; enable line numbers
+  (global-display-line-numbers-mode 1)
+
   ;; theme
   (use-package doom-themes
     :ensure t
