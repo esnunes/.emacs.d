@@ -252,6 +252,9 @@ Syntax checking
   ;; enable line numbers
   (global-display-line-numbers-mode 1)
 
+  ;; disable bell
+  (setq ring-bell-function 'ignore)
+
   ;; theme
   (use-package doom-themes
     :ensure t
