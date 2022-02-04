@@ -698,6 +698,20 @@ A quick and dirty emacs major mode for Prisma schemas.
   (require 'odin-mode)
   (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
 #+end_src
+
+** Go
+#+begin_src emacs-lisp
+  (defun en/go-config ()
+    (setq tab-width 4))
+
+  (use-package go-mode
+    :ensure t
+    :hook ((go-mode . lsp-deferred)
+           (go-mode . en/go-config)
+           (before-save . lsp-format-buffer)
+           (before-save . lsp-organize-imports)))
+#+end_src
+
 * Tools
 ** Shadowenv
 [[https://github.com/Shopify/shadowenv][Shadowenv]] provides a way to perform a set of manipulations to the process
