@@ -482,6 +482,14 @@ Syntax checking
     (global-company-mode '(not org-mode)))
 #+end_src
 
+** YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (yas-global-mode 1))
+#+end_src
+
 * Languages
 ** Org
 *** General
