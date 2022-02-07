@@ -285,7 +285,7 @@ Syntax checking
   ;; set font
   (if IS-LINUX
       (add-to-list 'default-frame-alist
-                   '(font . "JetBrains Mono ExtraLight-12"))
+                   '(font . "JetBrains Mono ExtraLight-11"))
     (add-to-list 'default-frame-alist
                  '(font . "DejaVu Sans Mono-14")))
   (setq-default line-spacing 4)
