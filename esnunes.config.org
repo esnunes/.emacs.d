@@ -287,7 +287,7 @@ Syntax checking
       (add-to-list 'default-frame-alist
                    '(font . "JetBrains Mono ExtraLight-11"))
     (add-to-list 'default-frame-alist
-                 '(font . "DejaVu Sans Mono-14")))
+                 '(font . "JetBrains Mono ExtraLight-13")))
   (setq-default line-spacing 4)
   ;; (defun en/set-bigger-spacing ()
   ;;   (setq-local default-text-properties '(line-spacing 0.25 line-height 1.25)))
