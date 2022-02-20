@@ -312,6 +312,9 @@ Syntax checking
 
   ;; show matching parenthesis, braces, etc
   (show-paren-mode 1)
+
+  ;; prevent emacs from freezing when parsing very long lines
+  (global-so-long-mode 1)
 #+end_src
 
 ** Modeline
