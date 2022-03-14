@@ -371,6 +371,14 @@ Syntax checking
   ;;          (side . bottom)
   ;;          (slot . -1))))
 #+end_src
+** Tabs
+#+begin_src emacs-lisp
+  (setq tab-bar-select-tab-modifiers '(super))
+  (setq tab-bar-tab-hints t)
+  (setq tab-bar-close-button-show nil
+        tab-bar-new-button-show nil)
+  (tab-bar-mode +1)
+#+end_src
 
 * Version Control
 #+begin_src emacs-lisp
