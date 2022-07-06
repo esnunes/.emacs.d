@@ -743,6 +743,14 @@ A quick and dirty emacs major mode for Prisma schemas.
            (before-save . lsp-organize-imports)))
 #+end_src
 
+** PlantUML
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :ensure t
+    :init
+    (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode)))
+#+end_src
+
 * Tools
 ** Shadowenv
 [[https://github.com/Shopify/shadowenv][Shadowenv]] provides a way to perform a set of manipulations to the process
