@@ -705,13 +705,13 @@ A quick and dirty emacs major mode for Prisma schemas.
     (setq flycheck-check-syntax-automatically '(save mode-enabled))
     (eldoc-mode +1)
     (tide-hl-identifier-mode +1)
-    (company-mode +1))
+    (company-mode +1)
+    ;; formats the buffer before saving
+    (add-hook 'before-save-hook 'tide-format-before-save))
 
   ;; aligns annotation to the right hand side
   (setq company-tooltip-align-annotations t)
 
-  ;; formats the buffer before saving
-  (add-hook 'before-save-hook 'tide-format-before-save)
   (add-hook 'typescript-mode-hook #'en/tide-setup)
 
   (require 'web-mode)
@@ -730,17 +730,30 @@ A quick and dirty emacs major mode for Prisma schemas.
   (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
 #+end_src
 
+** Zig
+#+begin_src emacs-lisp
+  (defun en/zig-config ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t))
+
+  (use-package zig-mode
+    :ensure t
+    :hook ((zig-mode . lsp-deferred)
+           (zig-mode . en/zig-config))
+    :config
+    (setq zig-format-on-save nil))
+#+end_src
+
 ** Go
 #+begin_src emacs-lisp
   (defun en/go-config ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t)
     (setq tab-width 4))
 
   (use-package go-mode
     :ensure t
     :hook ((go-mode . lsp-deferred)
-           (go-mode . en/go-config)
-           (before-save . lsp-format-buffer)
-           (before-save . lsp-organize-imports)))
+           (go-mode . en/go-config)))
 #+end_src
 
 ** PlantUML
