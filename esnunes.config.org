@@ -602,6 +602,13 @@ Syntax checking
     (c-set-offset 'arglist-close 0))
   (add-hook 'c-mode-common-hook 'en-c-setup)
 #+end_src
+
+** CMake
+#+begin_src emacs-lisp
+  (use-package cmake-mode
+    :ensure t)
+#+end_src
+
 ** Markdown
 #+begin_src emacs-lisp
   (use-package markdown-mode
