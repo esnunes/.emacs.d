@@ -765,6 +765,14 @@ A quick and dirty emacs major mode for Prisma schemas.
 
   (use-package zig-mode
     :ensure t
+    :init
+    (projectile-register-project-type 'zig-exe '("build.zig")
+                                      :project-file "build.zig"
+                                      :compile "zig build"
+                                      :run "zig build run"
+                                      :src-dir "src/"
+                                      :test "zig build test"
+                                      :test-dir "src/")
     :hook ((zig-mode . lsp-deferred)
            (zig-mode . en/zig-config))
     :config
