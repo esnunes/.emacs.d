@@ -225,7 +225,7 @@ Syntax checking
     :ensure t
     :init
     (with-eval-after-load 'exec-path-from-shell
-      (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
+      (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH" "DYLD_LIBRARY_PATH"))
         (add-to-list 'exec-path-from-shell-variables var)))
     (setq exec-path-from-shell-check-startup-files nil)
     (when (or IS-GUI (daemonp))
@@ -491,6 +491,23 @@ Syntax checking
     (setq company-tooltip-align-annotations 't)
     (setq lsp-completion-provider :capf)
     (global-company-mode '(not org-mode)))
+
+  (use-package company-irony
+    :ensure t
+    :config
+    (require 'company)
+    (add-to-list 'company-backends 'company-irony))
+
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (use-package irony-eldoc
+    :ensure t
+    :config
+    (add-hook 'irony-mode-hook 'irony-eldoc))
 #+end_src
 
 ** YASnippet
