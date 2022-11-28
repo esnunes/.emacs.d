@@ -784,6 +784,7 @@ A quick and dirty emacs major mode for Prisma schemas.
   (defun en/go-config ()
     (add-hook 'before-save-hook #'lsp-format-buffer t)
     (add-hook 'before-save-hook #'lsp-organize-imports t)
+    (setq lsp-go-build-flags ["-tags=wireinject"])
     (setq tab-width 4))
 
   (use-package go-mode
