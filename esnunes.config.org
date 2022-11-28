@@ -801,6 +801,12 @@ A quick and dirty emacs major mode for Prisma schemas.
     (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode)))
 #+end_src
 
+** Common Lisp
+#+begin_src emacs-lisp
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "sbcl")
+#+end_src
+
 * Tools
 ** Shadowenv
 [[https://github.com/Shopify/shadowenv][Shadowenv]] provides a way to perform a set of manipulations to the process
