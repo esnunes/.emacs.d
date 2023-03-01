@@ -377,6 +377,8 @@ Syntax checking
   (setq tab-bar-tab-hints t)
   (setq tab-bar-close-button-show nil
         tab-bar-new-button-show nil)
+  (global-set-key (kbd "s-}") 'tab-bar-switch-to-next-tab)
+  (global-set-key (kbd "s-{") 'tab-bar-switch-to-prev-tab)
   (tab-bar-mode +1)
 #+end_src
 
