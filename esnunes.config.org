@@ -256,13 +256,21 @@ Syntax checking
   (setq ring-bell-function 'ignore)
 
   ;; theme
-  (use-package doom-themes
+  (use-package catppuccin-theme
     :ensure t
     :config
-    (setq doom-themes-enable-bold nil)
-    (setq doom-themes-enable-italic nil)
-    (load-theme 'doom-one t)
-    (doom-themes-org-config))
+    ;; frappe, latte, macchiato or mocha
+    (setq catppuccin-flavor 'macchiato)
+    (setq catppuccin-enlarge-headings nil)
+    (load-theme 'catppuccin t))
+
+  ;; (use-package doom-themes
+  ;;   :ensure t
+  ;;   :config
+  ;;   (setq doom-themes-enable-bold nil)
+  ;;   (setq doom-themes-enable-italic nil)
+  ;;   (load-theme 'doom-one t)
+  ;;   (doom-themes-org-config))
 
   ;; highlight the current line
   (use-package hl-line
